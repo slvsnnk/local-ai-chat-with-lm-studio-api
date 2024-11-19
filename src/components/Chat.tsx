@@ -25,13 +25,14 @@ export default function Chat() {
     if (!input.trim() || isLoading) return;
 
     const userMessage: Message = { role: 'user', content: input };
-    setMessages(prev => [...prev, userMessage]);
+    const updatedMessages = [...messages, userMessage];
+    setMessages(updatedMessages);
     setInput('');
     setIsLoading(true);
     setError(null);
 
     try {
-      const response = await sendMessage([...messages, userMessage]);
+      const response = await sendMessage(updatedMessages);
       const assistantMessage: Message = {
         role: 'assistant',
         content: response.choices[0].message.content,
