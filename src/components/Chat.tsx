@@ -46,14 +46,25 @@ export default function Chat() {
     }
   };
 
+  const handleNewChat = () => {
+    setMessages([]);
+    setError(null);
+  };
+
   return (
     <div className="flex flex-col h-screen bg-gray-50">
       <div className="flex items-center justify-between p-4 border-b bg-white shadow-sm">
         <div className="flex items-center">
           <Bot className="w-6 h-6 text-blue-600 mr-2" />
-          <h1 className="text-xl font-semibold text-gray-800">Local AI Chat</h1>
+          <h1 className="text-xl font-semibold text-gray-800">Local AI Chat by Slv Snnk</h1>
         </div>
-        <ConnectionStatus />
+        <div className="flex items-center space-x-4">
+          <ConnectionStatus />
+          <button
+            onClick={handleNewChat}
+            className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2"
+          >New Chat</button>
+        </div>
       </div>
 
       <div className="flex-1 overflow-y-auto p-4 space-y-4">
