@@ -23,9 +23,6 @@ export async function checkConnection() {
 
 export async function sendMessage(messages: Message[]): Promise<ChatCompletionResponse> {
   try {
-    // First check if we can connect
-    //await checkConnection();
-
     const response = await fetch(`${API_URL}/v1/chat/completions`, {
       method: 'POST',
       headers: {
