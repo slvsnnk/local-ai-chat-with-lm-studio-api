@@ -21,7 +21,7 @@ export async function checkConnection() {
   }
 }
 
-export async function sendMessage(messages: Message[]): Promise<ChatCompletionResponse> {
+export async function sendMessage(messages: Message[], options?: { signal?: AbortSignal }): Promise<ChatCompletionResponse> {
   try {
     const response = await fetch(`${API_URL}/v1/chat/completions`, {
       method: 'POST',
@@ -35,6 +35,7 @@ export async function sendMessage(messages: Message[]): Promise<ChatCompletionRe
         temperature: 0.7,
         stream: false,
       }),
+      signal: options?.signal,
     });
 
     if (!response.ok) {
