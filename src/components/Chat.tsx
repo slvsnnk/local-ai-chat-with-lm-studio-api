@@ -11,6 +11,9 @@ export default function Chat() {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
+  const [role, setRole] = useState<string>('Developer');
+  const [systemMessageSent, setSystemMessageSent] = useState<boolean>(false);
+  const abortControllerRef = useRef<AbortController | null>(null);
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -20,35 +23,75 @@ export default function Chat() {
     scrollToBottom();
   }, [messages]);
 
+  const updateSystemMessage = (newRole: string) => {
+    if (systemMessageSent) {
+      const systemMessage: Message = { role: 'system', content: `You are a helpful assistant. The user is a ${newRole}.` };
+      setMessages(prevMessages => {
+        const filteredMessages = prevMessages.filter(msg => msg.role !== 'system');
+        return [systemMessage, ...filteredMessages];
+      });
+    }
+  };
+
+  const handleRoleChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const newRole = e.target.value;
+    setRole(newRole);
+    updateSystemMessage(newRole);
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!input.trim() || isLoading) return;
 
     const userMessage: Message = { role: 'user', content: input };
-    const updatedMessages = [...messages, userMessage];
+    let updatedMessages = [...messages, userMessage];
+
+    if (!systemMessageSent) {
+      const systemMessage: Message = { role: 'system', content: `You are a helpful assistant specialized in assisting a ${role}.` };
+      updatedMessages = [systemMessage, ...updatedMessages];
+      setSystemMessageSent(true);
+    }
+
     setMessages(updatedMessages);
     setInput('');
     setIsLoading(true);
     setError(null);
 
+    abortControllerRef.current = new AbortController();
+
     try {
-      const response = await sendMessage(updatedMessages);
+      const response = await sendMessage(updatedMessages, { signal: abortControllerRef.current.signal });
       const assistantMessage: Message = {
         role: 'assistant',
         content: response.choices[0].message.content,
       };
       setMessages(prev => [...prev, assistantMessage]);
     } catch (error) {
-      const errorMessage = error instanceof Error ? error.message : 'An unexpected error occurred';
-      setError(errorMessage);
+      if ((error as Error).name === 'AbortError') {
+        setError('Request was aborted');
+      } else {
+        const errorMessage = error instanceof Error ? error.message : 'An unexpected error occurred';
+        setError(errorMessage);
+      }
     } finally {
       setIsLoading(false);
+      abortControllerRef.current = null;
     }
   };
 
   const handleNewChat = () => {
+    if (abortControllerRef.current) {
+      abortControllerRef.current.abort();
+    }
     setMessages([]);
     setError(null);
+    setSystemMessageSent(false);
+  };
+
+  const handleAbort = () => {
+    if (abortControllerRef.current) {
+      abortControllerRef.current.abort();
+    }
   };
 
   return (
@@ -64,6 +107,12 @@ export default function Chat() {
             onClick={handleNewChat}
             className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2"
           >New Chat</button>
+          {isLoading && (
+            <button
+              onClick={handleAbort}
+              className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2"
+            >Abort</button>
+          )}
         </div>
       </div>
 
@@ -99,6 +148,23 @@ export default function Chat() {
 
       <form onSubmit={handleSubmit} className="p-4 border-t bg-white">
         <div className="flex space-x-4 max-w-4xl mx-auto">
+          <select
+            value={role}
+            onChange={handleRoleChange}
+            className="p-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+            disabled={isLoading}
+          >
+            <option value="Administrator">Administrator</option>
+            <option value="Project Manager">Project Manager</option>
+            <option value="Developer">Developer</option>
+            <option value="Tester (QA Engineer)">Tester (QA Engineer)</option>
+            <option value="Designer">Designer</option>
+            <option value="Data Analyst">Data Analyst</option>
+            <option value="Support Specialist">Support Specialist</option>
+            <option value="Scrum Master">Scrum Master</option>
+            <option value="Product Owner">Product Owner</option>
+            <option value="End-User">End-User</option>
+          </select>
           <input
             type="text"
             value={input}
