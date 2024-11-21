@@ -1,1 +1,1 @@
-if('serviceWorker' in navigator) {window.addEventListener('load', () => {navigator.serviceWorker.register('/sw.js', { scope: '/' })})}
+if('serviceWorker' in navigator) {window.addEventListener('load', () => {navigator.serviceWorker.register('/local-ai-chat-with-lm-studio-api/sw.js', { scope: '/local-ai-chat-with-lm-studio-api/' })})}
