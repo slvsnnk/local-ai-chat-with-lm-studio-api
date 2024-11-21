@@ -46,4 +46,16 @@ After completing the above steps, your local server should be up and running, re
 
 ---
 
+## 🛠 Adjusting Roles
+
+You can customize the roles used in the chat application by modifying the `glossary.ts` file. This file contains definitions and settings for different roles that the AI can assume during interactions.
+
+To adjust the roles:
+
+1. Open the `glossary.ts` file located in the project directory.
+2. Modify the role definitions as needed.
+3. Save the changes and restart the development server if it is running.
+
+---
+
 🎉 Enjoy exploring the local AI chat functionality!
