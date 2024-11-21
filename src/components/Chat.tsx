@@ -4,6 +4,7 @@ import { Message } from '../types';
 import MessageBubble from './Message';
 import ConnectionStatus from './ConnectionStatus';
 import { sendMessage } from '../api';
+import { roles, defaultRole } from '../glossary';
 
 export default function Chat() {
   const [messages, setMessages] = useState<Message[]>([]);
@@ -11,7 +12,7 @@ export default function Chat() {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
-  const [role, setRole] = useState<string>('Developer');
+  const [role, setRole] = useState<string>(defaultRole);
   const [systemMessageSent, setSystemMessageSent] = useState<boolean>(false);
   const abortControllerRef = useRef<AbortController | null>(null);
 
@@ -154,16 +155,9 @@ export default function Chat() {
             className="p-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
             disabled={isLoading}
           >
-            <option value="Administrator">Administrator</option>
-            <option value="Project Manager">Project Manager</option>
-            <option value="Developer">Developer</option>
-            <option value="Tester (QA Engineer)">Tester (QA Engineer)</option>
-            <option value="Designer">Designer</option>
-            <option value="Data Analyst">Data Analyst</option>
-            <option value="Support Specialist">Support Specialist</option>
-            <option value="Scrum Master">Scrum Master</option>
-            <option value="Product Owner">Product Owner</option>
-            <option value="End-User">End-User</option>
+            {roles.map((roleOption) => (
+              <option key={roleOption} value={roleOption}>{roleOption}</option>
+            ))}
           </select>
           <input
             type="text"
