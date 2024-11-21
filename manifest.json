@@ -1,0 +1,21 @@
+{
+  "name": "Local AI Chat",
+  "short_name": "AI Chat",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#000000",
+  "theme_color": "#000000",
+  "description": "Local AI Chat powered by LM Studio",
+  "icons": [
+    {
+      "src": "/bot-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "/bot-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
