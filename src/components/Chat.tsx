@@ -125,7 +125,8 @@ export default function Chat() {
             <ul className="text-sm mt-1 space-y-1">
               <li>1. A model loaded</li>
               <li>2. API server enabled in settings</li>
-              <li>3. Server running on port 1234</li>
+              <li>3. Enable CORS Navigate to the LM Studio local server and enable Cross-Origin <br />Resource Sharing (CORS) to allow requests from the chat application.</li>
+              <li>4. Server running on port 1234</li>
             </ul>
           </div>
         )}
